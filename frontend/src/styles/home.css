@@ -1,0 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600&display=swap");
+
+.homePage {
+  --bg: #f7f4ef;
+  --ink: #1e1e1e;
+  --muted: #6b6b6b;
+  --accent: #ff6b3d;
+  --card: #ffffff;
+  --border: #e6e0d8;
+  --shadow: 0 14px 40px rgba(30, 30, 30, 0.12);
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 10% -10%, #fff2de 0%, transparent 60%),
+    linear-gradient(160deg, #f7f4ef 0%, #f3efe8 100%);
+  color: var(--ink);
+  font-family: "Work Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.homePage .navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2.25rem 1rem;
+}
+
+.homePage .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.homePage .brandDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 6px rgba(255, 107, 61, 0.12);
+}
+
+.homePage .brand h2 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
+}
+
+.homePage .navActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.homePage .navButton {
+  gap: 0.4rem;
+  color: var(--muted);
+}
+
+.homePage .navButton span {
+  font-size: 0.95rem;
+  margin-left: 0.2rem;
+}
+
+.homePage .logoutBtn {
+  border-color: var(--border);
+  color: var(--ink);
+  text-transform: none;
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+}
+
+.homePage .meetContainer {
+  display: flex;
+  padding: 1rem 2.25rem 3rem;
+  gap: 8vw;
+  min-height: calc(100vh - 90px);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.homePage .leftPanel {
+  flex: 1 1 52%;
+  display: flex;
+  align-items: center;
+}
+
+.homePage .rightPanel {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homePage .heroCard {
+  background: var(--card);
+  padding: 2.25rem 2.4rem;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  max-width: 560px;
+  animation: homeRise 0.7s ease-out both;
+}
+
+.homePage .eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+
+.homePage .heroCard h2 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.9rem, 2.3vw, 2.6rem);
+  line-height: 1.15;
+  margin: 0 0 0.9rem;
+}
+
+.homePage .subText {
+  color: var(--muted);
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+}
+
+.homePage .joinRow {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.homePage .joinField {
+  min-width: 240px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.homePage .joinBtn {
+  background: var(--accent);
+  text-transform: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.6rem;
+  box-shadow: 0 10px 20px rgba(255, 107, 61, 0.3);
+}
+
+.homePage .joinBtn:hover {
+  background: #ff5a2a;
+}
+
+.homePage .metaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.homePage .metaDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+
+.homePage .mediaFrame {
+  background: #fff;
+  border-radius: 28px;
+  padding: 1.2rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: homeFloat 6s ease-in-out infinite;
+}
+
+.homePage .rightPanel img {
+  width: min(420px, 38vw);
+  height: auto;
+  border-radius: 20px;
+  display: block;
+}
