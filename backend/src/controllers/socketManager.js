@@ -5,11 +5,20 @@ let messages = {};
 let timeOnline = {};
 
 export const connectToSocket = (server) => {
-  const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+  const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
   const io = new Server(server, {
     cors: {
-      origin: allowedOrigin,
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(new Error("Not allowed by CORS"));
+      },
       methods: ["GET", "POST"],
       credentials: true,
     },

@@ -11,10 +11,24 @@ const app = express();
 const server = createServer(app);
 connectToSocket(server);
 
-const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:3000")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.set("port", process.env.PORT || 8000);
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "50kb" }));
 app.use(express.urlencoded({ limit: "50kb", extended: true }));
 
