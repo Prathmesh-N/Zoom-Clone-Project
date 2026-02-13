@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 import httpStatus from "http-status";
-import { useNavigate } from "react-router-dom";
 import server from "../envirnoment";
 
 export const AuthContext = createContext({});
@@ -11,13 +10,12 @@ const client = axios.create({
 });
 
 export const AuthProvider = ({ children }) => {
-  const authContext = useContext(AuthContext);
-  const [userData, setUserData] = useState(authContext);
+  const [userData, setUserData] = useState({});
 
-  const handleRegister = async (name, username, password) => {
+  const handleRegister = async (email, username, password) => {
     try {
       let request = await client.post("/register", {
-        name: name,
+        name: email,
         username: username,
         password: password,
       });
@@ -48,10 +46,8 @@ export const AuthProvider = ({ children }) => {
 
   const getHistoryOfUser = async () => {
     try {
-      let request = await client.post("/get_all_activity", {}, {
-        params: {
-          token: localStorage.getItem("token"),
-        },
+      let request = await client.post("/get_all_activity", {
+        token: localStorage.getItem("token"),
       });
       return request.data;
     } catch (err) {
@@ -63,21 +59,32 @@ export const AuthProvider = ({ children }) => {
     try {
       let request = await client.post("/add_to_activity", {
         token: localStorage.getItem("token"),
-        meeting_code: meetingCode,
-      })
+        meeting_code: meetingCode.trim(),
+      });
       return request;
     } catch (err) {
       throw err;
     }
   };
 
-  const router = useNavigate();
+  const deleteMeetingFromHistory = async (meetingId) => {
+    try {
+      const request = await client.post("/delete_activity", {
+        token: localStorage.getItem("token"),
+        meeting_id: meetingId,
+      });
+      return request;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const data = {
     userData,
     setUserData,
     getHistoryOfUser,
     addToUserHistory,
+    deleteMeetingFromHistory,
     handleRegister,
     handleLogin,
   };

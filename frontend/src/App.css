@@ -88,3 +88,32 @@
     height: 22rem;
   }
 }
+
+.howItWorks {
+  margin-top: 1.1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.howItWorks h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.howItWorks ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.howItWorks li + li {
+  margin-top: 0.28rem;
+}
+
+.howItWorks strong {
+  color: var(--ink);
+}

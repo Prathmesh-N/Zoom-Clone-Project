@@ -5,40 +5,49 @@ let messages = {};
 let timeOnline = {};
 
 export const connectToSocket = (server) => {
+  const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
+
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: allowedOrigin,
       methods: ["GET", "POST"],
-      allowedHeaders: ["*"],
       credentials: true,
     },
   });
 
   io.on("connection", (socket) => {
-
     console.log("Something Connected");
 
-    socket.on("join-call", (path) => {
-      if (connections[path] === undefined) {
-        connections[path] = [];
+    socket.on("join-call", (roomId) => {
+      if (!roomId || typeof roomId !== "string") {
+        return;
       }
-      connections[path].push(socket.id);
+
+      if (connections[roomId] === undefined) {
+        connections[roomId] = [];
+      }
+
+      if (!connections[roomId].includes(socket.id)) {
+        connections[roomId].push(socket.id);
+      }
+
       timeOnline[socket.id] = Date.now();
 
-      for (let a = 0; a < connections[path].length; a++) {
-        io.to(connections[path][a]).emit(
+      for (let a = 0; a < connections[roomId].length; a++) {
+        io.to(connections[roomId][a]).emit(
           "user-joined",
           socket.id,
-          connections[path],
+          connections[roomId],
         );
       }
-      if (messages[path] !== undefined) {
-        for (let a = 0; a < messages[path].length; ++a) {
+
+      if (messages[roomId] !== undefined) {
+        for (let a = 0; a < messages[roomId].length; ++a) {
           io.to(socket.id).emit(
             "chat-messages",
-            messages[path][a]["data"],
-            messages[path][a]["sender"],
-            messages[path][a]["socket-id-sender"],
+            messages[roomId][a]["data"],
+            messages[roomId][a]["sender"],
+            messages[roomId][a]["socket-id-sender"],
           );
         }
       }
@@ -76,28 +85,26 @@ export const connectToSocket = (server) => {
     });
 
     socket.on("disconnect", () => {
-      var diffTime = Math.abs(timeOnline[socket.id] - Date.now());
-      var key;
-      for (const [k, v] of JSON.parse(
-        JSON.stringify(Object.entries(connections)),
-      )) {
-        for (let a = 0; a < v.length; ++a) {
-          if (v[a] === socket.id) {
-            key = k;
+      delete timeOnline[socket.id];
 
-            for (let a = 0; a < connections[k].length; ++a) {
-              io.to(connections[key][a]).emit("user-left", socket.id);
-            }
-
-            var index = connections[key].indexOf(socket.id);
-
-            connections[key].splice(index, 1);
-
-            if (connections[key].length === 0) {
-              delete connections[key];
-            }
-          }
+      for (const [roomId, participants] of Object.entries(connections)) {
+        const index = participants.indexOf(socket.id);
+        if (index === -1) {
+          continue;
         }
+
+        participants.splice(index, 1);
+
+        participants.forEach((participantId) => {
+          io.to(participantId).emit("user-left", socket.id);
+        });
+
+        if (participants.length === 0) {
+          delete connections[roomId];
+          delete messages[roomId];
+        }
+
+        break;
       }
     });
   });

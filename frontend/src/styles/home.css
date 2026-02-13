@@ -116,12 +116,6 @@
   margin: 0 0 0.9rem;
 }
 
-.homePage .subText {
-  color: var(--muted);
-  margin: 0 0 1.5rem;
-  line-height: 1.6;
-}
-
 .homePage .joinRow {
   display: flex;
   gap: 0.8rem;
@@ -145,21 +139,6 @@
 
 .homePage .joinBtn:hover {
   background: #ff5a2a;
-}
-
-.homePage .metaRow {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-top: 1.5rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.homePage .metaDivider {
-  width: 1px;
-  height: 16px;
-  background: var(--border);
 }
 
 .homePage .mediaFrame {

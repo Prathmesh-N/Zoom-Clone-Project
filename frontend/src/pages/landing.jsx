@@ -43,7 +43,15 @@ export default function LandingPage() {
             <span style={{ color: "#ff9839" }}>Connect</span> with your Loved
             Ones
           </h1>
-          <p>Cover a distance by <span style={{ color: "#ff9839" }}>Connect Me</span></p>
+                    <p>Cover a distance by <span style={{ color: "#ff9839" }}>Connect Me</span></p>
+          <div className="howItWorks">
+            <h3>How it works</h3>
+            <ol>
+              <li><strong>Create a meeting room</strong></li>
+              <li><strong>Share URL link to Your Friends</strong></li>
+              <li><strong>Now Connect, Start Collaborating </strong></li>
+            </ol>
+          </div>
           <div role="button">
             <Link to="/auth">Get Started</Link>
           </div>
@@ -55,3 +63,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

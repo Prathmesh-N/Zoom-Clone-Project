@@ -10,7 +10,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthContext } from "../contexts/AuthContext";
 import Snackbar from "@mui/material/Snackbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const defaultTheme = createTheme({
   palette: {
@@ -28,38 +28,48 @@ const defaultTheme = createTheme({
   shape: { borderRadius: 16 },
 });
 
+const getModeFromQuery = (searchParams) => {
+  return searchParams.get("mode") === "login" ? "login" : "register";
+};
+
 export default function Authentication() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [error, setError] = React.useState("");
   const [message, setMessage] = React.useState("");
-
-  const [fromState, setFromState] = React.useState(0);
-
+  const [mode, setMode] = React.useState(getModeFromQuery(searchParams));
   const [open, setOpen] = React.useState(false);
 
   const { handleRegister, handleLogin } = React.useContext(AuthContext);
 
-  let handleAuth = async () => {
+  React.useEffect(() => {
+    setMode(getModeFromQuery(searchParams));
+    setError("");
+  }, [searchParams]);
+
+  const switchMode = (nextMode) => {
+    setSearchParams({ mode: nextMode });
+  };
+
+  const handleAuth = async () => {
     try {
-      if (fromState === 0) {
-        //Register
-        let result = await handleRegister(name, username, password);
-        console.log(result);
-        setUsername("");
-        setMessage(result);
+      if (mode === "register") {
+        const result = await handleRegister(email, username, password);
+        setPassword("");
+        setEmail("");
+        setMessage(`${result}. Please log in to continue.`);
         setOpen(true);
         setError("");
-        setFromState(1);
-        setPassword("");
-        setName("");
+        switchMode("login");
+        return;
       }
-      if (fromState === 1) {
-        // Login
-        let result = await handleLogin(username, password);
-        console.log(result);
+
+      const result = await handleLogin(username, password);
+      if (result) {
         setUsername("");
         setPassword("");
         setError("");
@@ -68,8 +78,8 @@ export default function Authentication() {
         navigate("/home");
       }
     } catch (err) {
-      let message = err.response?.data?.message || "Something went wrong";
-      setError(message);
+      const errMessage = err.response?.data?.message || "Something went wrong";
+      setError(errMessage);
     }
   };
 
@@ -112,19 +122,19 @@ export default function Authentication() {
               }}
             >
               <Button
-                variant={fromState === 0 ? "contained" : "outlined"}
+                variant={mode === "register" ? "contained" : "outlined"}
                 sx={{ textTransform: "none", borderRadius: 999, px: 2.5 }}
                 onClick={() => {
-                  setFromState(0);
+                  switchMode("register");
                 }}
               >
                 Sign Up
               </Button>
               <Button
-                variant={fromState === 1 ? "contained" : "outlined"}
+                variant={mode === "login" ? "contained" : "outlined"}
                 sx={{ textTransform: "none", borderRadius: 999, px: 2.5 }}
                 onClick={() => {
-                  setFromState(1);
+                  switchMode("login");
                 }}
               >
                 Sign In
@@ -132,24 +142,23 @@ export default function Authentication() {
             </Box>
 
             <Box component="form" noValidate sx={{ mt: 1, width: "100%" }}>
-              {fromState === 0 ? (
+              {mode === "register" ? (
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  id="fullname"
-                  label="Full Name"
-                  name="fullname"
-                  value={name}
+                  id="email"
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={email}
                   autoFocus
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setEmail(e.target.value);
                   }}
                   sx={{ backgroundColor: "#fff", borderRadius: 2 }}
                 />
-              ) : (
-                <></>
-              )}
+              ) : null}
 
               <TextField
                 margin="normal"
@@ -180,9 +189,7 @@ export default function Authentication() {
                 sx={{ backgroundColor: "#fff", borderRadius: 2 }}
               />
 
-              <p style={{ color: "#c2410c", margin: "0.25rem 0 0" }}>
-                {error}
-              </p>
+              <p style={{ color: "#c2410c", margin: "0.25rem 0 0" }}>{error}</p>
 
               <Button
                 type="button"
@@ -198,7 +205,7 @@ export default function Authentication() {
                 }}
                 onClick={handleAuth}
               >
-                {fromState === 0 ? "Register" : "Login"}
+                {mode === "register" ? "Register" : "Login"}
               </Button>
             </Box>
           </Box>

@@ -1,7 +1,6 @@
+import "dotenv/config";
 import express from "express";
 import { createServer } from "node:http";
-
-import { Server } from "socket.io";
 
 import mongoose from "mongoose";
 import { connectToSocket } from "./controllers/socketManager.js";
@@ -10,10 +9,12 @@ import userRoutes from "./routes/users.js";
 
 const app = express();
 const server = createServer(app);
-const io = connectToSocket(server);
+connectToSocket(server);
+
+const allowedOrigin = process.env.CLIENT_URL || "http://localhost:3000";
 
 app.set("port", process.env.PORT || 8000);
-app.use(cors());
+app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json({ limit: "50kb" }));
 app.use(express.urlencoded({ limit: "50kb", extended: true }));
 
@@ -24,13 +25,16 @@ app.get("/home", (req, res) => {
 });
 
 const start = async () => {
-  const connsctiondb = await mongoose.connect(
-    "mongodb+srv://prathmeshZoom:qwertyuiop0987@zoomclonecluster.ujpwk0r.mongodb.net/?appName=ZoomCloneCluster",
-  );
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) {
+    throw new Error("MONGODB_URI is not set");
+  }
 
-  console.log(`MongoDB Connected DB Host : ${connsctiondb.connection.host}`);
+  const connectionDb = await mongoose.connect(mongoUri);
+
+  console.log(`MongoDB Connected DB Host : ${connectionDb.connection.host}`);
   server.listen(app.get("port"), () => {
-    console.log("Listening on PORT 8000");
+    console.log(`Listening on PORT ${app.get("port")}`);
   });
 };
 

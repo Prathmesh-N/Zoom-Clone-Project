@@ -9,10 +9,12 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
+import withAuth from "../utils/withAuth";
 
-export function History() {
-  const { getHistoryOfUser } = useContext(AuthContext);
+function History() {
+  const { getHistoryOfUser, deleteMeetingFromHistory } = useContext(AuthContext);
 
   const [meetings, setMeetings] = useState([]);
 
@@ -31,6 +33,17 @@ export function History() {
     };
     fetchHistory();
   }, []);
+
+  const handleDeleteMeeting = async (meetingId) => {
+    try {
+      await deleteMeetingFromHistory(meetingId);
+      setMeetings((prevMeetings) =>
+        prevMeetings.filter((meeting) => meeting._id !== meetingId)
+      );
+    } catch (err) {
+      // implement snackbar here
+    }
+  };
 
   let formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -98,9 +111,9 @@ export function History() {
             gap: 2,
           }}
         >
-          {meetings.map((meeting, index) => (
+          {meetings.map((meeting) => (
             <Card
-              key={index}
+              key={meeting._id}
               variant="outlined"
               sx={{
                 borderRadius: 3,
@@ -109,15 +122,34 @@ export function History() {
               }}
             >
               <CardContent>
-                <Typography
-                  gutterBottom
-                  sx={{ color: "#6b6b6b", fontSize: 13, letterSpacing: "0.1em" }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: 1,
+                  }}
                 >
-                  MEETING CODE
-                </Typography>
-                <Typography sx={{ fontWeight: 600, mb: 1 }}>
-                  {meeting.meetingCode}
-                </Typography>
+                  <Box>
+                    <Typography
+                      gutterBottom
+                      sx={{ color: "#6b6b6b", fontSize: 13, letterSpacing: "0.1em" }}
+                    >
+                      MEETING CODE
+                    </Typography>
+                    <Typography sx={{ fontWeight: 600, mb: 1 }}>
+                      {meeting.meetingCode}
+                    </Typography>
+                  </Box>
+                  <IconButton
+                    aria-label="delete meeting"
+                    onClick={() => handleDeleteMeeting(meeting._id)}
+                    size="small"
+                    sx={{ color: "#b42318" }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
                 <Typography sx={{ color: "#6b6b6b" }}>
                   Date: {formatDate(meeting.date)}
                 </Typography>
@@ -154,3 +186,5 @@ export function History() {
     </Box>
   );
 }
+
+export default withAuth(History);

@@ -3,21 +3,27 @@ import { useNavigate } from "react-router-dom";
 
 const withAuth = (WrappedComponent) => {
   const AuthComponent = (props) => {
-    const router = useNavigate();
+    const navigate = useNavigate();
 
     const isAuthenticated = () => {
-      if (localStorage.getItem("token")) {
-        return true;
-      }
-      return false;
+      return Boolean(localStorage.getItem("token"));
     };
+
+    const authenticated = isAuthenticated();
+
     useEffect(() => {
-      if (!isAuthenticated()) {
-        router("/auth");
+      if (!authenticated) {
+        navigate("/", { replace: true });
       }
-    }, []);
+    }, [authenticated, navigate]);
+
+    if (!authenticated) {
+      return null;
+    }
+
     return <WrappedComponent {...props} />;
   };
+
   return AuthComponent;
 };
 
