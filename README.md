@@ -44,14 +44,13 @@ Zoom Clone/
         ├── app.js
         ├── routes/  
         ├── controllers/
-        └── models/
+        └── models/ 
 
+### API Endpoints
+- Base: /api/v1/users
 
-API Endpoints
-Base: /api/v1/users
-
-POST /register - create user
-POST /login - login user
-POST /add_to_activity - add meeting to history
-POST /get_all_activity - fetch user meeting history
-POST /delete_activity - delete meeting from history
+- POST /register - create user
+- POST /login - login user
+- POST /add_to_activity - add meeting to history
+- POST /get_all_activity - fetch user meeting history
+- POST /delete_activity - delete meeting from history
