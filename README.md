@@ -32,6 +32,7 @@ ConnectMe is a full-stack video meeting app where users can register/login, join
 ## 📁 Project Structure
 
 bash
+```
 Zoom Clone/
 ├── frontend/
 │   ├── src/
@@ -45,6 +46,7 @@ Zoom Clone/
         ├── routes/  
         ├── controllers/
         └── models/ 
+```
 
 ### API Endpoints
 - Base: /api/v1/users
