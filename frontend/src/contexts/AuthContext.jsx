@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
 
   const handleRegister = async (email, username, password) => {
+    const startTime = performance.now();
     try {
       let request = await client.post("/register", {
         name: email,
@@ -21,14 +22,22 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (request.status === httpStatus.CREATED) {
+        console.log(
+          `[auth] register completed in ${(performance.now() - startTime).toFixed(0)}ms`,
+        );
         return request.data.message;
       }
     } catch (err) {
+      console.error(
+        `[auth] register failed after ${(performance.now() - startTime).toFixed(0)}ms`,
+        err?.response?.data || err.message,
+      );
       throw err;
     }
   };
 
   const handleLogin = async (username, password) => {
+    const startTime = performance.now();
     try {
       let request = await client.post("/login", {
         username: username,
@@ -37,9 +46,16 @@ export const AuthProvider = ({ children }) => {
 
       if (request.status === httpStatus.OK) {
         localStorage.setItem("token", request.data.token);
+        console.log(
+          `[auth] login completed in ${(performance.now() - startTime).toFixed(0)}ms`,
+        );
         return request.data;
       }
     } catch (err) {
+      console.error(
+        `[auth] login failed after ${(performance.now() - startTime).toFixed(0)}ms`,
+        err?.response?.data || err.message,
+      );
       throw err;
     }
   };

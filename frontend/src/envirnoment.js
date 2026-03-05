@@ -7,10 +7,10 @@ const isEnvLocalUrl = envApiUrl.includes("localhost");
 
 const server =
   !isLocalHost && isEnvLocalUrl
-    ? "https://zoom-clone-backend-xp1r.onrender.com"
+    ? "https://zoom-clone-backend-4b54.onrender.com"
     : envApiUrl ||
       (isLocalHost
         ? "http://localhost:8000"
-        : "https://zoom-clone-backend-xp1r.onrender.com");
+        : "https://zoom-clone-backend-4b54.onrender.com");
 
 export default server;

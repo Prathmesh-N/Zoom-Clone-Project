@@ -43,6 +43,7 @@ export default function Authentication() {
   const [message, setMessage] = React.useState("");
   const [mode, setMode] = React.useState(getModeFromQuery(searchParams));
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const { handleRegister, handleLogin } = React.useContext(AuthContext);
 
@@ -56,6 +57,11 @@ export default function Authentication() {
   };
 
   const handleAuth = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
       if (mode === "register") {
         const result = await handleRegister(email, username, password);
@@ -80,6 +86,8 @@ export default function Authentication() {
     } catch (err) {
       const errMessage = err.response?.data?.message || "Something went wrong";
       setError(errMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,6 +132,7 @@ export default function Authentication() {
               <Button
                 variant={mode === "register" ? "contained" : "outlined"}
                 sx={{ textTransform: "none", borderRadius: 999, px: 2.5 }}
+                disabled={isLoading}
                 onClick={() => {
                   switchMode("register");
                 }}
@@ -133,6 +142,7 @@ export default function Authentication() {
               <Button
                 variant={mode === "login" ? "contained" : "outlined"}
                 sx={{ textTransform: "none", borderRadius: 999, px: 2.5 }}
+                disabled={isLoading}
                 onClick={() => {
                   switchMode("login");
                 }}
@@ -153,6 +163,7 @@ export default function Authentication() {
                   type="email"
                   value={email}
                   autoFocus
+                  disabled={isLoading}
                   onChange={(e) => {
                     setEmail(e.target.value);
                   }}
@@ -169,6 +180,7 @@ export default function Authentication() {
                 name="username"
                 value={username}
                 autoFocus
+                disabled={isLoading}
                 onChange={(e) => {
                   setUsername(e.target.value);
                 }}
@@ -183,6 +195,7 @@ export default function Authentication() {
                 type="password"
                 id="password"
                 value={password}
+                disabled={isLoading}
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
@@ -203,9 +216,14 @@ export default function Authentication() {
                   py: 1.1,
                   boxShadow: "0 12px 24px rgba(232, 168, 149, 0.3)",
                 }}
+                disabled={isLoading}
                 onClick={handleAuth}
               >
-                {mode === "register" ? "Register" : "Login"}
+                {isLoading
+                  ? "Please wait..."
+                  : mode === "register"
+                    ? "Register"
+                    : "Login"}
               </Button>
             </Box>
           </Box>
